@@ -27,7 +27,7 @@ build_release:
 	@$(CC1) build	--release
 
 run_release: 
-	@$(CC1) run		--release
+	@$(CC1) run	--release
 
 run: 
 	@$(CC1) run	

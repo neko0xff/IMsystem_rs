@@ -5,11 +5,12 @@ IMsystem_rs
 
 ## 框架
 - Rust
-  - Rocket
-  - SQLX
+  * 後端
+    * Rocket
+    * SQLX
 - DataBase: MariaDB(MySQL)
 
-## To-do
+## API: To-do
 - 使用者
   * Login
   * Singin
