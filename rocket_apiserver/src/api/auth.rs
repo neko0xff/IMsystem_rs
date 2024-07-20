@@ -1,8 +1,13 @@
 use crate::{
-    ds::{ds_auth::*,ds_user::*},
-    module::database::AppState
+    ds::{
+        ds_auth::*,
+        ds_user::*
+    },
+    module::{
+        database::AppState,
+        format_str::console_time
+    }
 };
-use chrono::{DateTime, Local};
 use rocket::{
     State,
     http::Status,
@@ -27,10 +32,8 @@ use rand_core::OsRng;
 pub async fn auth_login(
     meta: Json<InputmetaLogin>,
     state: &State<AppState>
-) -> Result<Json<Outputmeta>, Custom<String>> {
+) -> Result<Json<OutputmetaAuth>, Custom<String>> {
     let metadata = meta.into_inner();
-    let current_local: DateTime<Local> = Local::now();
-    let custom_format = current_local.format("%Y/%m/%d %H:%M:%S").to_string();
     let db = &state.db;
     let user = query_as!(
         User,
@@ -47,10 +50,10 @@ pub async fn auth_login(
         .verify_password(metadata.password.as_bytes(), &parsed_hash)
         .is_ok();
     
-    println!("[{}] POST /auth/login", custom_format);
+    println!("[{}] POST /auth/login", console_time());
 
     if is_valid {
-        let output =  Outputmeta {
+        let output =  OutputmetaAuth {
             status : "1".to_string(),
             message : "Is Finnish Login!".to_string(),
             username :  user.username.clone(),
@@ -68,10 +71,8 @@ pub async fn auth_login(
 pub async fn auth_signup(
     meta: Json<InputmetaSingup>,
     state: &State<AppState>
-) -> Result<Json<Outputmeta>, Custom<String>> {
+) -> Result<Json<OutputmetaAuth>, Custom<String>> {
     let metadata = meta.into_inner();
-    let current_local: DateTime<Local> = Local::now();
-    let custom_format = current_local.format("%Y/%m/%d %H:%M:%S").to_string();
     let db = &state.db;
     let existing_user = query_as!(
             User,
@@ -97,7 +98,7 @@ pub async fn auth_signup(
         password: password_hash,
         mail: metadata.mail
     };
-    let output =  Outputmeta {
+    let output =  OutputmetaAuth {
         status : "1".to_string(),
         message : "Is Finnish Add!".to_string(),
         username : user.username.clone(),
@@ -105,7 +106,7 @@ pub async fn auth_signup(
         mail: user.mail.clone()
     };
     
-    println!("[{}] POST /auth/signup", custom_format);
+    println!("[{}] POST /auth/signup", console_time());
     if let Some(_) = existing_user {
         return Err(Custom(Status::Conflict, "Username already exists".to_string()));
     }
@@ -127,10 +128,8 @@ pub async fn auth_signup(
 pub async fn auth_mailcheck(
     meta: Json<InputmetaMailcheck>,
     state: &State<AppState>
-) -> Result<Json<Outputmeta>, Custom<String>> {
+) -> Result<Json<OutputmetaAuth>, Custom<String>> {
     let metadata = meta.into_inner();
-    let current_local: DateTime<Local> = Local::now();
-    let custom_format = current_local.format("%Y/%m/%d %H:%M:%S").to_string();
     let db = &state.db;
     let user = query_as!(
         UserSearch,
@@ -141,9 +140,9 @@ pub async fn auth_mailcheck(
         .await
         .map_err(|_| Custom(Status::Unauthorized, "Invalid username or mail".to_string()))?;
     
-    println!("[{}] POST /auth/mailcheck", custom_format);
+    println!("[{}] POST /auth/mailcheck", console_time());
 
-    let output =  Outputmeta {
+    let output =  OutputmetaAuth {
             status : "1".to_string(),
             message : "Is Finnish check!".to_string(),
             username :  user.username.clone(),
@@ -160,10 +159,8 @@ pub async fn auth_mailcheck(
 pub async fn auth_forget(
     meta: Json<InputmetaForget>,
     state: &State<AppState>
-) -> Result<Json<Outputmeta>, Custom<String>> {
+) -> Result<Json<OutputmetaAuth>, Custom<String>> {
     let metadata = meta.into_inner();
-    let current_local: DateTime<Local> = Local::now();
-    let custom_format = current_local.format("%Y/%m/%d %H:%M:%S").to_string();
     let db = &state.db;
     let existing_user = query_as!(
         User,
@@ -190,7 +187,7 @@ pub async fn auth_forget(
         mail: existing_user.mail.clone(),
     };
 
-    println!("[{}] POST /auth/forget", custom_format);
+    println!("[{}] POST /auth/forget", console_time());
     sqlx::query("UPDATE users SET password = ? WHERE username = ?")
         .bind(&user.password)
         .bind(&user.username)
@@ -198,7 +195,7 @@ pub async fn auth_forget(
         .await
         .map_err(|e| Custom(Status::InternalServerError, format!("Database error: {}", e)))?;
 
-    let output = Outputmeta {
+    let output = OutputmetaAuth {
         status: "1".to_string(),
         message: "Is Finnish Update data!".to_string(),
         username: user.username,
@@ -214,10 +211,8 @@ pub async fn auth_forget(
 pub async fn auth_updateusermeta(
     meta: Json<InputmetaUpdate>,
     state: &State<AppState>
-) -> Result<Json<Outputmeta>, Custom<String>> {
+) -> Result<Json<OutputmetaAuth>, Custom<String>> {
     let metadata = meta.into_inner();
-    let current_local: DateTime<Local> = Local::now();
-    let custom_format = current_local.format("%Y/%m/%d %H:%M:%S").to_string();
     let db = &state.db;
     let existing_user = query_as!(
         User,
@@ -242,7 +237,7 @@ pub async fn auth_updateusermeta(
         mail: metadata.mail,
     };
 
-    println!("[{}] POST /auth/updateUserMeta", custom_format);
+    println!("[{}] POST /auth/updateUserMeta", console_time());
     sqlx::query("UPDATE users SET password = ?,loginname = ?, mail = ? WHERE username = ?")
         .bind(&user.password)
         .bind(&user.loginname)
@@ -252,7 +247,7 @@ pub async fn auth_updateusermeta(
         .await
         .map_err(|e| Custom(Status::InternalServerError, format!("Database error: {}", e)))?;
 
-    let output = Outputmeta {
+    let output = OutputmetaAuth {
         status: "1".to_string(),
         message: "Is Finnish Update data!".to_string(),
         username: user.username,

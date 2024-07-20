@@ -1,10 +1,7 @@
-use chrono::{DateTime, Local};
+use crate::module::format_str::console_time;
 
 #[get("/")]
 pub fn index() -> &'static str {
-    let current_local: DateTime<Local> = Local::now();
-    let custom_format = current_local.format("%Y/%m/%d %H:%M:%S").to_string();
-
-    println!("[{}] GET /", custom_format);
+    println!("[{}] GET /", console_time());
     "API Server is Running!" // 在網頁上顯示
 }

@@ -19,3 +19,6 @@ DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${DBServer_IP}:${DBServer_P
 
 ## 資料庫表格&內容
 - 備份檔: `rocket_apiserver/data/noteDB_v[x].sql.gz`
+- 手動
+   * 備份: `mysqldump -h 127.0.0.1 -u master -p noteDB > noteDB_v[x].sql`
+   * 還原: `mariadb -u master -p noteDB < noteDB_v2.sql`

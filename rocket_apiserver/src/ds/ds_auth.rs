@@ -34,9 +34,8 @@ pub struct InputmetaMailcheck {
 }
 
 /*輸出資訊*/
-#[warn(non_camel_case_types)]
 #[derive(Serialize, Deserialize)]
-pub struct  Outputmeta {
+pub struct  OutputmetaAuth {
     pub status: String,
     pub message: String,
     pub username: String,
