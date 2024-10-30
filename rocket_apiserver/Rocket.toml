@@ -1,5 +1,5 @@
 # 服務連線配置
 [default]
 address = "0.0.0.0"     # 服務IP位置
-port = 8085             # 服務通訊埠
+port = 3095             # 服務通訊埠
 log_level="normal"      # 輸出啟動過程紀錄

@@ -1,0 +1,75 @@
+設定：(類似留言板) UTF-8編碼
+提供一表單給予使用者填寫回報問題，問題送出後：
+ 1) 問題存放於資料庫
+ 2) email通知有問題反應
+    a) 一件一通知
+    b) 一定量後才通知
+ 3) 問題回答表單給予管理者回答使用者問題
+ 4) 提供搜尋功能，可搜尋條件：已回答、未回答、回報人、時間、關鍵字、隱藏問題
+ 5) 選擇使用者：
+    a) 可看到總問題清單
+    b) 可看已回答問題清單
+    c) 可看未回答問題清單
+    d) 不可看問題清單
+ 6) 結合ldap，管理者和使用者必需登入後才可使用本板回報問題功能，否則只限瀏覽問題清單
+ 7) 問題清單以日期分組，預設只開啟今日問題，分組方式為：
+      a) 今天
+	  b) 最近三天(除今天)
+	  c) 最近七天(除a b 外)
+	  d) 最近一個月(除a b c)
+	  e) 較舊的(除a b c d)
+所需頁面：
+ 1) 登入表單
+ 2) 使用者回報表單
+ 3) 問題清單
+ 4) 管理者回答表單
+ 5) 功能設定表單
+
+資料庫：字首綴字 => faq_
+ 1) 留言資料表：
+    guestBook
+    id , title , userId , dateTime , visit , report , display , content , description
+ 2) 回答資料表：
+    comment
+    id , qid , manager , dateTime , content
+ 3) 功能資料表：
+    configure
+    id , sort , category , title , name , value , encodeName , dateTime , type , content , description
+ 4) 使用者記錄：身份(user/manager)、最近問題編號、問題次數、回答次數、最後登入時間、備註
+    userlog
+    id , userLevel , lastQuestId , askcount , anserCount , lastLoginTime , description
+ 5) 歷史(log)資料表：
+    weblog
+    id , dateTime , userId , action
+	actin 種類：
+	  a) 登入
+	  b) 登出
+	  c) 提問
+	  d) 回答
+
+問題清單：
+ 參數：
+   1) 總目題數				SQL
+   2) 一頁問題數			config
+   3) 總頁數				calculate
+   4) 本頁數				form
+   5) 頁數索引數目			config
+   6) 問題顯示方式(all/ans/noans)	config
+   7) 瀏覽者身份(admin/regular)		login
+   8) 顯示欄位				config
+ 欄位：
+   1) 編號			all
+   2) 標題			all
+   3) 發表人			all
+   4) 發表時間			all
+   5) 瀏覽數			admin
+   6) 回復數			admin
+   7) 功能(顯示/隱藏/刪除) 	admin
+
+
+黑名單
+公告
+管理者名單
+管理者等級
+
+

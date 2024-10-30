@@ -11,7 +11,8 @@ use api::{
     message::*,
     auth::*,
     service::*,
-    todo::*
+    todo::*,
+    websocket::*
 };
 use module::{
     database::AppState,
@@ -47,5 +48,10 @@ async fn rocket() -> rocket::Rocket<rocket::Build> {
             auth_mailcheck,
             auth_forget,
             auth_updateusermeta
+        ])
+        .mount("/echo_ws", routes![
+            echo_channel,
+            echo_stream,
+            echo_compose
         ])
 }
